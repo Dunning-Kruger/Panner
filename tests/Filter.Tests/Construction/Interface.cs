@@ -1,7 +1,6 @@
 ﻿namespace Filter.Tests.Construction
 {
     using Panner.Builders;
-    using Xunit;
 
     public class Interface
     {
@@ -42,7 +41,6 @@
                 .IsNotFilterableByName();
         }
 
-        [Fact]
         public void ByPropertyAlias()
         {
             this.pPropertyBuilder
