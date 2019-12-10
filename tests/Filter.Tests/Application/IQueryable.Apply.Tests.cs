@@ -1,8 +1,9 @@
-﻿namespace Sort.Tests.Application
+﻿namespace Filter.Tests.Application
 {
     using System;
     using System.Collections.Generic;
     using System.Linq;
+    using System.Linq.Expressions;
     using Moq;
     using Panner;
     using Xunit;
@@ -14,9 +15,9 @@
             return new List<IQueryableApplyTests>().AsQueryable();
         }
 
-        public Mock<ISortParticle<IQueryableApplyTests>> GetParticle()
+        public Mock<IFilterParticle<IQueryableApplyTests>> GetParticle()
         {
-            var p = new Mock<ISortParticle<IQueryableApplyTests>>(MockBehavior.Strict);
+            var p = new Mock<IFilterParticle<IQueryableApplyTests>>(MockBehavior.Strict);
             return p;
         }
 
@@ -27,7 +28,7 @@
             {
                 IQueryableExtensions.Apply(
                     source: GetIQueryable(),
-                    particles: (IEnumerable<ISortParticle<IQueryableApplyTests>>)null
+                    particles: (IEnumerable<IFilterParticle<IQueryableApplyTests>>)null
                 );
             });
         }
@@ -38,7 +39,7 @@
         {
             var result = IQueryableExtensions.Apply(
                 source: GetIQueryable(),
-                particles: Enumerable.Empty<ISortParticle<IQueryableApplyTests>>()
+                particles: Enumerable.Empty<IFilterParticle<IQueryableApplyTests>>()
             );
 
             Assert.NotNull(result);
@@ -48,7 +49,7 @@
         public void ExecutesAll()
         {
             var queryable = GetIQueryable();
-            var particles = new List<Mock<ISortParticle<IQueryableApplyTests>>>()
+            var particles = new List<Mock<IFilterParticle<IQueryableApplyTests>>>()
             {
                 GetParticle(),
                 GetParticle(),
@@ -62,10 +63,10 @@
             foreach (var p in particles)
             {
                 p.InSequence(sequence)
-                    .Setup(x => x.ApplyTo(It.IsAny<IOrderedQueryable<IQueryableApplyTests>>()))
-                    .Returns<IOrderedQueryable<IQueryableApplyTests>>(x =>
+                    .Setup(x => x.GetExpression(It.IsAny<ParameterExpression>()))
+                    .Returns<Expression>(x =>
                     {
-                        return x;
+                        return Expression.Constant(true);
                     });
             }
 
@@ -76,7 +77,7 @@
 
             foreach (var p in particles)
             {
-                p.Verify(x => x.ApplyTo(It.IsAny<IOrderedQueryable<IQueryableApplyTests>>()));
+                p.Verify(x => x.GetExpression(It.IsAny<ParameterExpression>()));
             }
 
         }
