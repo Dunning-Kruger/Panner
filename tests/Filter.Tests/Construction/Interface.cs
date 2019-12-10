@@ -1,19 +1,29 @@
 ﻿namespace Filter.Tests.Construction
 {
     using Panner.Builders;
+    using Xunit;
 
     public class Interface
     {
-        private PEntityBuilder<Interface> pEntityBuilder { get; set; }
-        private PPropertyBuilder<Interface> pPropertyBuilder { get; set; }
+        public class FakePost
+        {
+            public FakeAuthor Author { get; set; }
+        }
+
+        public class FakeAuthor
+        {
+            public int Id { get; set; }
+        }
+        private PEntityBuilder<FakePost> pEntityBuilder { get; set; }
+        private PPropertyBuilder<FakePost> pPropertyBuilder { get; set; }
 
         public Interface()
         {
             this.pEntityBuilder = new PContextBuilder()
-                .Entity<Interface>();
+                .Entity<FakePost>();
 
             this.pPropertyBuilder = this.pEntityBuilder
-                .Property(p => p.pPropertyBuilder);
+                .Property(p => p.Author.Id);
         }
 
         public void AllAreFilterable()
@@ -32,7 +42,7 @@
                 .IsNotFilterableByName();
         }
 
-
+        [Fact]
         public void ByPropertyAlias()
         {
             this.pPropertyBuilder
