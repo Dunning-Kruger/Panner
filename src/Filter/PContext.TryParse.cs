@@ -16,16 +16,17 @@
             var particlesRaw = new List<IFilterParticle<T>>();
             var generators = pContext.GetGenerators<T, IFilterParticle<T>>();
 
-            Regex regx = new Regex(",(?=(?:[^\"]*\"[^\"]*\")*(?![^\"]*\"))");
+            // Matching commas outside of quotes and parentheses
+            Regex regx = new Regex(",(?=(?:[^\"]*\"[^\"]*\")*(?![^\"]*\"))(?=(?:[^\"]*\"[^\"]*\")*(?![^\"]*\"))");
             var splitInput = regx.Split(input);
 
             bool wasAbleToParse = true;
 
-            foreach (var sort in splitInput)
+            foreach (var filter in splitInput)
             {
                 IFilterParticle<T> particle = null;
 
-                wasAbleToParse &= generators.Any(x => x.TryGenerate(pContext, sort, out particle));
+                wasAbleToParse &= generators.Any(x => x.TryGenerate(pContext, filter, out particle));
 
                 if (!(particle is null))
                     particlesRaw.Add(particle);
