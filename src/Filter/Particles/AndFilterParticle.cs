@@ -4,16 +4,16 @@
     using System.Linq;
     using System.Linq.Expressions;
 
-    public class OrFilterParticle<TEntity> : IFilterParticle<TEntity>
+    public class AndFilterParticle<TEntity> : IFilterParticle<TEntity>
         where TEntity : class
     {
         readonly IFilterParticle<TEntity>[] particles;
 
-        public OrFilterParticle(params IFilterParticle<TEntity>[] particles)
+        public AndFilterParticle(params IFilterParticle<TEntity>[] particles)
         {
             if (particles.Length < 2)
             {
-                throw new Exception("OrFilterParticle needs at least two particles.");
+                throw new Exception("AndFilterParticle needs at least two particles.");
             }
 
             this.particles = particles;
@@ -27,7 +27,7 @@
 
             foreach (var expr in expressions.Skip(1))
             {
-                result = Expression.Or(result, expr);
+                result = Expression.AndAlso(result, expr);
             }
 
             return result;

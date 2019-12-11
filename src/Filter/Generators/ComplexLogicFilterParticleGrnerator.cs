@@ -1,16 +1,17 @@
 ﻿namespace Panner.Filter.Generators
 {
     using System;
+    using System.Collections.Generic;
     using System.Linq;
     using System.Text.RegularExpressions;
     using Panner.Filter.Particles;
 
-    public class OrFilterParticleGenerator<TEntity> : IFilterParticleGenerator<TEntity>
+    public class ComplexLogicGenerator<TEntity> : IFilterParticleGenerator<TEntity>
         where TEntity : class
     {
         internal readonly Type type;
 
-        public OrFilterParticleGenerator()
+        public ComplexLogicGenerator()
         {
             this.type = typeof(TEntity);
         }
@@ -20,11 +21,13 @@
             input = input.Trim();
 
             // Attempt to split the input by all "||" not enclosed in quotes or parenthesis.
-            Regex regex = new Regex("||(?=(?:[^\"]*\"[^\"]*\")*(?![^\"]*\"))(?=(?:[^\"]*\"[^\"]*\")*(?![^\"]*\"))");
-            var splitInput = regex.Split(input);
+            Regex regex = new Regex("[||](?=(?:[^\"]*\"[^\"]*\")*(?![^\"]*\"))(?=(((?!\\)).)*\\()|[^\\(\\)]*$)");
+            var splitInput = regex
+                .Split(input)
+                .Where(x => !string.IsNullOrWhiteSpace(x));
 
             // If we dont end up with at least two parts, there's no OR operation here.
-            if (splitInput.Length < 2)
+            if (splitInput.Count() < 2)
             {
                 particle = null;
                 return false;
@@ -43,16 +46,19 @@
                     cleanFilter = filter.Substring(1, filter.Length - 2);
                 }
 
-                var generators = context.GetGenerators<TEntity, IFilterParticle<TEntity>>();
-
-                IFilterParticle<TEntity> fragmentParticle = null;
-                if (!generators.Any(x => x.TryGenerate(context, filter, out fragmentParticle)))
+                if (!context.TryParseCsv(cleanFilter, out IEnumerable<IFilterParticle<TEntity>> particles))
                 {
                     particle = null;
                     return false;
                 }
 
-                resultParticle = resultParticle is null ? fragmentParticle : new OrFilterParticle<TEntity>(resultParticle, fragmentParticle);
+                var partialResult = particles.Count() > 1 ?
+                    new AndFilterParticle<TEntity>(particles.ToArray()) :
+                    particles.Single();
+
+                resultParticle = resultParticle is null ?
+                    partialResult :
+                    new OrFilterParticle<TEntity>(resultParticle, partialResult);
             }
 
             particle = resultParticle;
