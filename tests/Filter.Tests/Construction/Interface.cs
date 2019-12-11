@@ -4,25 +4,16 @@
 
     public class Interface
     {
-        public class FakePost
-        {
-            public FakeAuthor Author { get; set; }
-        }
-
-        public class FakeAuthor
-        {
-            public int Id { get; set; }
-        }
-        private PEntityBuilder<FakePost> pEntityBuilder { get; set; }
-        private PPropertyBuilder<FakePost> pPropertyBuilder { get; set; }
+        private PEntityBuilder<Interface> pEntityBuilder { get; set; }
+        private PPropertyBuilder<Interface> pPropertyBuilder { get; set; }
 
         public Interface()
         {
             this.pEntityBuilder = new PContextBuilder()
-                .Entity<FakePost>();
+                .Entity<Interface>();
 
             this.pPropertyBuilder = this.pEntityBuilder
-                .Property(p => p.Author.Id);
+                .Property(p => p.pPropertyBuilder);
         }
 
         public void AllAreFilterable()
