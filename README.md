@@ -1,19 +1,19 @@
 <!-- <AspNetCore> -->
 <p align=center><kbd>
-    <b>ASP.NET Core WebAPI?</b> You should start with <a href="https://github.com/OSDKDev/Panner.AspNetCore"><b>Panner.AspNetCore</b></a>!
-</kbd></p>
+    <b>ASP.NET Core WebAPI?</b> You should start with <a href="https://github.com/OSDxxxxxxxxxxxxasdfxxxxxxxxxxxxxxxxxxxxxxxxxxKDev/Panner.AspNetCore"><b>Panner.AspNetCore</b></a>!
+</kbd></p>sdf
 <!-- </AspNetCore> -->
-
+xxxxxxxxx
 # Panner [![Nuget](https://img.shields.io/nuget/v/Panner?label=NuGet&color=success)](https://www.nuget.org/packages/Panner) [![Coverage Status](https://img.shields.io/coveralls/github/OSDKDev/Panner)](https://coveralls.io/github/OSDKDev/Panner?branch=master)
 **Clean**, **customizable** & **extensible** framework for the configuration, parsing and application of sorts and filters from a CSV.
 
----
+---dcasdfa
 
 ### Basic Usage - Sample
-
+xxxxxxxxxx
 #### a. Configuration
-
-Setting up your context to define your entities and rules.
+asdf
+Setting up your context to defineasdf your entities and rules.
 ```csharp
 var builder = new PContext();
 
